@@ -32,3 +32,13 @@ export const getAllusers = TryCatch(async (req, res, next) => {
         users,
     });
 });
+export const getUser = TryCatch(async (req, res, next) => {
+    const id = req.params.id;
+    const user = await User.findById(id);
+    if (!user)
+        return next(new errorHandler("invalid id", 400));
+    return res.status(200).json({
+        success: true,
+        user,
+    });
+});
