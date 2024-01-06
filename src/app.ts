@@ -1,7 +1,8 @@
 import express from "express";
 import userRoute from "./routes/user.route.js";
-import mongoose from "mongoose";
+// import mongoose from "mongoose";
 import { connectDB } from "./utils/features.js";
+import { errorMiddleware } from "./middlewares/error.js";
 
 connectDB();
 // import dotenv from "dotenv";
@@ -28,6 +29,8 @@ app.get("/", (req, res) => {
 
 // using routes
 app.use("/api/user", userRoute);
+
+app.use(errorMiddleware);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
