@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { User } from "../models/user.model.js";
 import { NewUserRequestBody } from "../types/user.type.js";
 import { TryCatch } from "../middlewares/error.js";
+import errorHandler from "../utils/utility-class.js";
 export const newUser = TryCatch(
   async (
     req: Request<{}, {}, NewUserRequestBody>,
@@ -9,7 +10,16 @@ export const newUser = TryCatch(
     next: NextFunction
   ) => {
     const { name, email, photo, gender, _id, dob } = req.body;
-    const user = await User.create({
+    let user = await User.findById(_id);
+    if (user) {
+      return res.status(200).json({
+        success: true,
+        message: `welcome ${user.name}`,
+      });
+    }
+    if (!_id || !name || !email || !photo || !gender || !dob)
+      return next(new errorHandler("Please add all fields", 400));
+    user = await User.create({
       name,
       email,
       photo,
@@ -24,3 +34,11 @@ export const newUser = TryCatch(
     });
   }
 );
+
+export const getAllusers = TryCatch(async (req, res, next) => {
+  const users = await User.find({});
+  return res.status(200).json({
+    success: true,
+    users,
+  });
+});
