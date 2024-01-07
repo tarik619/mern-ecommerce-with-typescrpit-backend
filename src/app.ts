@@ -1,8 +1,9 @@
 import express from "express";
-import userRoute from "./routes/user.route.js";
 // import mongoose from "mongoose";
 import { connectDB } from "./utils/features.js";
 import { errorMiddleware } from "./middlewares/error.js";
+import userRoute from "./routes/user.route.js";
+import productRoute from "./routes/product.route.js";
 
 connectDB();
 // import dotenv from "dotenv";
@@ -29,6 +30,9 @@ app.get("/", (req, res) => {
 
 // using routes
 app.use("/api/user", userRoute);
+app.use("/api/product", productRoute);
+
+app.use("/uploads", express.static("uploads"));
 
 app.use(errorMiddleware);
 
