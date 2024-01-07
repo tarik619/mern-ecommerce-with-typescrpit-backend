@@ -65,3 +65,39 @@ export const getAdminProducts = TryCatch(
     });
   }
 );
+
+export const getSingleProduct = TryCatch(async (req, res, next) => {
+  const { id } = req.params;
+  const products = await Product.findById(id);
+  return res.status(201).json({
+    success: true,
+    products,
+  });
+});
+
+export const updateProduct = TryCatch(async (req, res, next) => {
+  const { id } = req.params;
+  const { name, price, category, stock } = req.body;
+  const photo = req.file;
+  const product = await Product.findById(id);
+  if (!product) return next(new errorHandler("invalid product id", 400));
+
+  if (photo) {
+    rm(product.photo!, () => {
+      console.log("old photo deleted");
+    });
+    product.photo = photo.path;
+  }
+
+  if (name) product.name = name;
+  if (price) product.price = price;
+  if (category) product.category = category;
+  if (stock) product.stock = stock;
+
+  await product.save();
+
+  return res.status(201).json({
+    success: true,
+    message: "Product updated successfully",
+  });
+});
