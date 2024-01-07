@@ -26,3 +26,17 @@ export const newProduct = TryCatch(async (req, res, next) => {
         message: "Product created successfully",
     });
 });
+export const getLatestProducts = TryCatch(async (req, res, next) => {
+    const products = await Product.find({}).sort({ createdAt: -1 }).limit(5);
+    return res.status(201).json({
+        success: true,
+        products,
+    });
+});
+export const getCategories = TryCatch(async (req, res, next) => {
+    const categories = await Product.distinct("category");
+    return res.status(201).json({
+        success: true,
+        categories,
+    });
+});

@@ -35,3 +35,23 @@ export const newProduct = TryCatch(
     });
   }
 );
+
+export const getLatestProducts = TryCatch(
+  async (req: Request<{}, {}, NewProductRequestBody>, res, next) => {
+    const products = await Product.find({}).sort({ createdAt: -1 }).limit(5);
+    return res.status(201).json({
+      success: true,
+      products,
+    });
+  }
+);
+
+export const getCategories = TryCatch(
+  async (req: Request<{}, {}, NewProductRequestBody>, res, next) => {
+    const categories = await Product.distinct("category");
+    return res.status(201).json({
+      success: true,
+      categories,
+    });
+  }
+);
