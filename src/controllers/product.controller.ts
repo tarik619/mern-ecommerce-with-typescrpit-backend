@@ -55,3 +55,13 @@ export const getCategories = TryCatch(
     });
   }
 );
+
+export const getAdminProducts = TryCatch(
+  async (req: Request<{}, {}, NewProductRequestBody>, res, next) => {
+    const products = await Product.find({});
+    return res.status(201).json({
+      success: true,
+      products,
+    });
+  }
+);
