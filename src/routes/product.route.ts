@@ -8,6 +8,7 @@ import {
   getAdminProducts,
   getSingleProduct,
   updateProduct,
+  deleteProduct,
 } from "../controllers/product.controller.js";
 import { signleUpload } from "../middlewares/multer.js";
 
@@ -17,8 +18,9 @@ router.post("/new", adminOnly, signleUpload, newProduct);
 
 router.get("/latest", getLatestProducts);
 router.get("/categories", getCategories);
-router.get("/admin-products", getAdminProducts);
+router.get("/admin-products", adminOnly, getAdminProducts);
 router.get("/:id", getSingleProduct);
-router.get("/:id", signleUpload, updateProduct);
+router.put("/:id", adminOnly, signleUpload, updateProduct);
+router.delete("/:id", adminOnly, deleteProduct);
 
 export default router;

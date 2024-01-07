@@ -101,3 +101,20 @@ export const updateProduct = TryCatch(async (req, res, next) => {
     message: "Product updated successfully",
   });
 });
+
+export const deleteProduct = TryCatch(async (req, res, next) => {
+  const { id } = req.params;
+  const product = await Product.findById(id);
+  if (!product) return next(new errorHandler("product not found", 404));
+
+  rm(product.photo!, () => {
+    console.log("photo deleted");
+  });
+
+  await product.deleteOne();
+
+  return res.status(201).json({
+    success: true,
+    message: "product deleted successfully",
+  });
+});
