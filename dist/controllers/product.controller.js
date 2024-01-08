@@ -3,30 +3,7 @@ import { Product } from "../models/product.model.js";
 import errorHandler from "../utils/utility-class.js";
 import { rm } from "fs";
 import { nodeCache } from "../app.js";
-export const newProduct = TryCatch(async (req, res, next) => {
-    const { name, price, category, stock } = req.body;
-    const photo = req.file;
-    if (!photo) {
-        return next(new errorHandler("please add photo", 400));
-    }
-    if (!name || !price || !category || !stock) {
-        rm(photo.path, () => {
-            console.log("deleted");
-        });
-        return next(new errorHandler("please enter all fields", 400));
-    }
-    await Product.create({
-        name,
-        price,
-        stock,
-        category: category.toLowerCase(),
-        photo: photo.path,
-    });
-    return res.status(201).json({
-        success: true,
-        message: "Product created successfully",
-    });
-});
+import { invalidateCache } from "../utils/features.js";
 // revalidate on new. update,delete product & on new order
 export const getLatestProducts = TryCatch(async (req, res, next) => {
     let products;
@@ -86,6 +63,31 @@ export const getSingleProduct = TryCatch(async (req, res, next) => {
         product,
     });
 });
+export const newProduct = TryCatch(async (req, res, next) => {
+    const { name, price, category, stock } = req.body;
+    const photo = req.file;
+    if (!photo) {
+        return next(new errorHandler("please add photo", 400));
+    }
+    if (!name || !price || !category || !stock) {
+        rm(photo.path, () => {
+            console.log("deleted");
+        });
+        return next(new errorHandler("please enter all fields", 400));
+    }
+    await Product.create({
+        name,
+        price,
+        stock,
+        category: category.toLowerCase(),
+        photo: photo.path,
+    });
+    await invalidateCache({ product: true });
+    return res.status(201).json({
+        success: true,
+        message: "Product created successfully",
+    });
+});
 export const updateProduct = TryCatch(async (req, res, next) => {
     const { id } = req.params;
     const { name, price, category, stock } = req.body;
@@ -108,6 +110,7 @@ export const updateProduct = TryCatch(async (req, res, next) => {
     if (stock)
         product.stock = stock;
     await product.save();
+    await invalidateCache({ product: true });
     return res.status(201).json({
         success: true,
         message: "Product updated successfully",
@@ -122,6 +125,7 @@ export const deleteProduct = TryCatch(async (req, res, next) => {
         console.log("photo deleted");
     });
     await product.deleteOne();
+    await invalidateCache({ product: true });
     return res.status(201).json({
         success: true,
         message: "product deleted successfully",
