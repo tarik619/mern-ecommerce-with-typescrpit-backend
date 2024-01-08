@@ -4,7 +4,9 @@ import { connectDB } from "./utils/features.js";
 import { errorMiddleware } from "./middlewares/error.js";
 import userRoute from "./routes/user.route.js";
 import productRoute from "./routes/product.route.js";
+import NodeCache from "node-cache";
 connectDB();
+export const nodeCache = new NodeCache();
 // import dotenv from "dotenv";
 // dotenv.config();
 // mongoose
