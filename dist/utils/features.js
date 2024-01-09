@@ -10,18 +10,19 @@ export const connectDB = (uri) => {
         console.log(`db connected to ${c.connection.host}`);
     });
 };
-export const invalidateCache = async ({ product, order, admin, userId, orderId, }) => {
+export const invalidateCache = async ({ product, order, admin, userId, orderId, productId, }) => {
     if (product) {
         const productKeys = [
             "latest-products",
             "categories",
             "all-products",
+            `product-${productId}}`,
         ];
+        if (typeof productId === "string")
+            productKeys.push(`product-${productId}`);
+        if (typeof productId === "object")
+            productId.forEach((i) => productKeys.push(`product-${i}`));
         // `product-${id}`
-        const products = await Product.find({}).select("_id");
-        products.forEach((i) => {
-            productKeys.push(`product-${i._id}`);
-        });
         nodeCache.del(productKeys);
     }
     if (order) {

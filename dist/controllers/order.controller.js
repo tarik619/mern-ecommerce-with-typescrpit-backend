@@ -14,7 +14,7 @@ export const newOrder = TryCatch(async (req, res, next) => {
         // !discount
         !total)
         return next(new errorHandler("please enter all feilds", 400));
-    await Order.create({
+    const order = await Order.create({
         shippingInfo,
         orderItems,
         user,
@@ -30,6 +30,7 @@ export const newOrder = TryCatch(async (req, res, next) => {
         order: true,
         admin: true,
         userId: user,
+        productId: order.orderItems.map((i) => String(i.productId)),
     });
     return res.status(201).json({
         success: true,
