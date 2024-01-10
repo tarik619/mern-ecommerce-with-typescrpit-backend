@@ -6,6 +6,7 @@ import userRoute from "./routes/user.route.js";
 import productRoute from "./routes/product.route.js";
 import orderRoute from "./routes/order.route.js";
 import paymentRoute from "./routes/payment.route.js";
+import dashboardRoute from "./routes/stats.route.js";
 import { config } from "dotenv";
 import NodeCache from "node-cache";
 import morgan from "morgan";
@@ -46,6 +47,7 @@ app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
 app.use("/api/order", orderRoute);
 app.use("/api/payment", paymentRoute);
+app.use("/api/dashboard", dashboardRoute);
 
 app.use("/uploads", express.static("uploads"));
 
