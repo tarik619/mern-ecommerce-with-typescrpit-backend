@@ -13,7 +13,7 @@ export const connectDB = (uri: string) => {
     });
 };
 
-export const invalidateCache = async ({
+export const invalidateCache = ({
   product,
   order,
   admin,
@@ -48,6 +48,12 @@ export const invalidateCache = async ({
     nodeCache.del(orderKeys);
   }
   if (admin) {
+    nodeCache.del([
+      "admin-stats",
+      "admin-pie-charts",
+      "admin-bar-charts",
+      "admin-line-charts",
+    ]);
   }
 };
 
