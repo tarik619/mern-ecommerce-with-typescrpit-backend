@@ -10,12 +10,16 @@ import dashboardRoute from "./routes/stats.route.js";
 import { config } from "dotenv";
 import NodeCache from "node-cache";
 import morgan from "morgan";
+import Stripe from "stripe";
 
 config({
   path: "./.env",
 });
 
+const stripeKey = process.env.STRIPE_KEY || "";
 connectDB(process.env.MONGO_URI || "");
+
+export const stripe = new Stripe(stripeKey);
 
 export const nodeCache = new NodeCache();
 
