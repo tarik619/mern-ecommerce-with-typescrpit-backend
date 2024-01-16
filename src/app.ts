@@ -11,6 +11,7 @@ import { config } from "dotenv";
 import NodeCache from "node-cache";
 import morgan from "morgan";
 import Stripe from "stripe";
+import cors from "cors";
 
 config({
   path: "./.env",
@@ -39,6 +40,7 @@ export const nodeCache = new NodeCache();
 const app = express();
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(cors());
 
 const port = process.env.PORT || 3000;
 

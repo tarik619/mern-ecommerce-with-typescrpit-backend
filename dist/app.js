@@ -11,8 +11,10 @@ import { config } from "dotenv";
 import NodeCache from "node-cache";
 import morgan from "morgan";
 import Stripe from "stripe";
+import cors from "cors";
+
 config({
-    path: "./.env",
+  path: "./.env",
 });
 const stripeKey = process.env.STRIPE_KEY || "";
 connectDB(process.env.MONGO_URI || "");
@@ -31,9 +33,11 @@ export const nodeCache = new NodeCache();
 const app = express();
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(cors());
+
 const port = process.env.PORT || 3000;
 app.get("/", (req, res) => {
-    res.send("api working");
+  res.send("api working");
 });
 // using routes
 app.use("/api/user", userRoute);
@@ -44,5 +48,5 @@ app.use("/api/dashboard", dashboardRoute);
 app.use("/uploads", express.static("uploads"));
 app.use(errorMiddleware);
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port ${port}`);
 });
